@@ -8,7 +8,7 @@ public class StringValueAttribute(string value) : Attribute
 #region Enum extensions
 public static class EnumExtensions
 {
-    public static string ToValue(this Enum value)
+    public static string ToValue(this System.Enum value)
     {
         var fieldInfo = value.GetType().GetField(value.ToString());
         
@@ -18,7 +18,7 @@ public static class EnumExtensions
         return attributes.Length > 0 ? attributes[0].StringValue : string.Empty;
     }
     
-    public static T ToEnum<T>(this string value) where T : Enum
+    public static T ToEnum<T>(this string value) where T : System.Enum
     {
         var type = typeof(T);
         if (!type.IsEnum) throw new InvalidOperationException();

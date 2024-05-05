@@ -7,6 +7,8 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using CultureStay.Application.Common.Interfaces;
 using CultureStay.Domain.Entities;
 using CultureStay.Domain.Entities.Base;
+using CultureStay.Domain.Enum;
+using Message = CultureStay.Domain.Entities.Message;
 
 namespace CultureStay.Infrastructure.Data;
 
@@ -17,6 +19,27 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<int>, int>
     {
         _currentUser = currentUser;
     }
+    
+    public DbSet<Booking> Bookings { get; set; } = null!;
+    public DbSet<Wishlist> Wishlists { get; set; } = null!;
+    
+    public DbSet<CancellationTicket> CancellationTickets { get; set; } = null!;
+    public DbSet<CancellationTicketAttachment> CancellationTicketAttachments { get; set; } = null!;
+    
+    public DbSet<Property> Properties { get; set; } = null!;
+    public DbSet<PropertyReview> PropertyReviews { get; set; } = null!;
+    public DbSet<PropertyImage> PropertyImages { get; set; } = null!;
+    public DbSet<PropertyUtility> PropertyAmenities { get; set; } = null!;
+    
+    public DbSet<Host> Hosts { get; set; } = null!;
+    public DbSet<Guest> Guests { get; set; } = null!;
+    public DbSet<HostReview> HostReviews { get; set; } = null!;
+    public DbSet<GuestReview> GuestReviews { get; set; } = null!;
+    
+    public DbSet<RefreshToken> RefreshTokens { get; set; } = null!;
+    
+    public DbSet<Message> Messages { get; set; } = null!;
+    
     
     protected override void OnModelCreating(ModelBuilder builder)
     {
