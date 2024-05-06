@@ -43,6 +43,7 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<int>, int>
     
     protected override void OnModelCreating(ModelBuilder builder)
     {
+        builder.AddIdentitySeedData();
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         
         // Add soft delete query filter
