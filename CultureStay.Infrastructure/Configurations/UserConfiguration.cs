@@ -35,19 +35,19 @@ public class ApplicationUserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(u => u.Introduction)
             .HasMaxLength(StringLength.Description);
 
-        builder.HasData(
-            new User
-            {
-                Id = 1,
-                UserName = "admin",
-                NormalizedUserName = "ADMIN",
-                Email = "example@gmail.com",
-                NormalizedEmail = "EXAMPLE@GMAIL.COM",
-                EmailConfirmed = true,
-                PasswordHash = new PasswordHasher<User>().HashPassword(null!, "Admin@123"),
-                SecurityStamp = Guid.NewGuid().ToString(),
-                FullName = "Admin",
-            });
+        // builder.HasData(
+        //     new User
+        //     {
+        //         Id = 1,
+        //         UserName = "admin",
+        //         NormalizedUserName = "ADMIN",
+        //         Email = "example@gmail.com",
+        //         NormalizedEmail = "EXAMPLE@GMAIL.COM",
+        //         EmailConfirmed = true,
+        //         PasswordHash = new PasswordHasher<User>().HashPassword(null!, "Admin@123"),
+        //         SecurityStamp = Guid.NewGuid().ToString(),
+        //         FullName = "Admin",
+        //     });
     }
 }
 
@@ -55,20 +55,20 @@ public class ApplicationRoleConfiguration : IEntityTypeConfiguration<IdentityRol
 {
     public void Configure(EntityTypeBuilder<IdentityRole<int>> builder)
     {
-        builder.HasData(
-            new IdentityRole<int>
-            {
-                Id = 1,
-                Name = "admin",
-                NormalizedName = "ADMIN"
-            },
-            new IdentityRole<int>
-            {
-                Id = 2,
-                Name = "user",
-                NormalizedName = "USER"
-            }
-        );
+        // builder.HasData(
+        //     new IdentityRole<int>
+        //     {
+        //         Id = 1,
+        //         Name = "admin",
+        //         NormalizedName = "ADMIN"
+        //     },
+        //     new IdentityRole<int>
+        //     {
+        //         Id = 2,
+        //         Name = "user",
+        //         NormalizedName = "USER"
+        //     }
+        // );
     }
 }
 
@@ -76,11 +76,11 @@ public class ApplicationUserRoleConfig : IEntityTypeConfiguration<IdentityUserRo
 {
     public void Configure(EntityTypeBuilder<IdentityUserRole<int>> builder)
     {
-        builder.HasData(
-            new IdentityUserRole<int>
-            {
-                RoleId = 1,
-                UserId = 1
-            });
+        // builder.HasData(
+        //     new IdentityUserRole<int>
+        //     {
+        //         RoleId = 1,
+        //         UserId = 1
+        //     });
     }
 }
