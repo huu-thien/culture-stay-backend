@@ -15,7 +15,7 @@ public class UnitOfWork : IUnitOfWork
 
     public Task BeginTransactionAsync(CancellationToken ct) => _context.Database.BeginTransactionAsync(ct);
 
-    public Task CommitAsync(CancellationToken ct) => _context.Database.CommitTransactionAsync(ct);
+    public Task CommitTransactionAsync(CancellationToken ct) => _context.Database.CommitTransactionAsync(ct);
 
     public Task RollbackAsync(CancellationToken ct) => _context.Database.RollbackTransactionAsync(ct);
 }

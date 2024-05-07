@@ -1,0 +1,59 @@
+﻿using AutoMapper;
+using CultureStay.Application.Common.Interfaces;
+using CultureStay.Application.Common.Models;
+using CultureStay.Application.Common.Specifications;
+using CultureStay.Application.Services.Interface;
+using CultureStay.Application.ViewModels.Property.Response;
+using CultureStay.Application.ViewModels.Property.Specifications;
+using CultureStay.Application.ViewModels.PropertyUtility.Response;
+using CultureStay.Domain.Entities;
+using CultureStay.Domain.Repositories.Base;
+
+namespace CultureStay.Application.Services;
+
+public class PropertyService (
+    IRepositoryBase<Property> propertyRepository,
+    IRepositoryBase<Host> hostRepository,
+    IRepositoryBase<Guest> guestRepository,
+    IRepositoryBase<Booking> bookingRepository,
+    IUnitOfWork unitOfWork,
+    IMapper mapper,
+    ICurrentUser currentUser) : BaseService(unitOfWork, mapper, currentUser), IPropertyService
+{
+
+    
+    public async Task<PaginatedList<GetListPropertyResponse>> GetListPropertyAsync(PropertyQueryParameters pqp)
+    {
+        var role = currentUser.Role;
+        var propertyFilterSpec = new PropertyFilterSpecification(pqp, role);
+        
+        var (items, totalCount) = await propertyRepository.FindWithTotalCountAsync(propertyFilterSpec);
+
+        var propertyList = items.ToList();
+
+        var result = Mapper.Map<List<GetListPropertyResponse>>(propertyList);
+        
+        // If logged in user, show favorite properties
+        var currentGuestId = 0;
+        if (!string.IsNullOrWhiteSpace(currentUser.Id))
+        {
+            var currentGuest = await guestRepository.FindOneAsync(new GuestByUserIdSpecification(int.Parse(currentUser.Id)));
+            if (currentGuest is not null)
+                currentGuestId = currentGuest.Id;
+            else
+                currentGuestId = 0;
+        }
+
+        foreach (var item in result)
+        {
+            item.NumberOfReviews = propertyList.First(i => i.Id == item.Id).PropertyReviews.Count;
+            if(item.NumberOfReviews == 0) continue;
+            var property = propertyList.First(i => i.Id == item.Id);
+            item.Rating = property.PropertyReviews
+                .Average(r => (r.Accuracy + r.Communication + r.Cleanliness + r.Location + r.CheckIn + r.Value) / 6.0);
+            item.IsFavorite = propertyList.Any(i => i.Id == item.Id && i.Wishlists.Any(w => w.GuestId == currentGuestId));
+        }
+        
+        return new PaginatedList<GetListPropertyResponse>(result, totalCount, pqp.PageIndex, pqp.PageSize);
+    }
+}

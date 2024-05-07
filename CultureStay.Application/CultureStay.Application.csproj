@@ -8,6 +8,9 @@
 
     <ItemGroup>
       <Folder Include="Helpers\" />
+      <Folder Include="ViewModels\PropertyImage\Request\" />
+      <Folder Include="ViewModels\PropertyUtility\Request\" />
+      <Folder Include="ViewModels\Property\Request\" />
     </ItemGroup>
 
     <ItemGroup>
