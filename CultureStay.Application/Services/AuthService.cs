@@ -75,7 +75,7 @@ public class AuthService(
 			if (!result.Succeeded)
 				throw new AppException(result.Errors.First().Description);
 
-			await UnitOfWork.CommitAsync();
+			await UnitOfWork.CommitTransactionAsync();
 		}
 		catch
 		{
@@ -157,7 +157,7 @@ public class AuthService(
 
 			await UnitOfWork.SaveChangesAsync();
 
-			await UnitOfWork.CommitAsync();
+			await UnitOfWork.CommitTransactionAsync();
 		}
 		catch
 		{

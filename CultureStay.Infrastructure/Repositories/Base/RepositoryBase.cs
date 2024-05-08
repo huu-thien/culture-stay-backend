@@ -3,6 +3,7 @@ using CultureStay.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using CultureStay.Domain.Entities.Base;
 using CultureStay.Domain.Repositories.Base;
+using CultureStay.Domain.Specification;
 
 namespace CultureStay.Infrastructure.Repositories.Base;
 
@@ -52,4 +53,36 @@ public class RepositoryBase<TEntity> : IRepositoryBase<TEntity> where TEntity : 
 
     public Task<bool> IsAllExistAsync(IEnumerable<int> ids, CancellationToken cancellationToken = default)
         => DbSet.AllAsync(e => ids.Contains(e.Id), cancellationToken);
+
+    public async Task<TEntity?> FindOneAsync(ISpecification<TEntity> spec) 
+        => await GetQuery<TEntity>.From(DbSet, spec).FirstOrDefaultAsync();
+
+    public async Task<IEnumerable<TEntity>> FindListAsync(ISpecification<TEntity> spec)
+        => await GetQuery<TEntity>.From(DbSet, spec).ToListAsync();
+
+    public async Task<int> CountAsync(ISpecification<TEntity> spec)
+        => await GetQuery<TEntity>.From(DbSet, spec).CountAsync();
+
+    public async Task<int> CountAsync(Expression<Func<TEntity, bool>> predicate)
+        => await DbSet.CountAsync(predicate);
+
+    public async Task<double> AverageAsync(ISpecification<TEntity> spec, Expression<Func<TEntity, double>> selector)
+        => await GetQuery<TEntity>.From(DbSet, spec).AverageAsync(selector);
+
+    public async Task<bool> AnyAsync(ISpecification<TEntity> spec)
+        => await GetQuery<TEntity>.From(DbSet, spec).AnyAsync();
+
+    public async Task<bool> AnyAsync(int id)
+        => await DbSet.AnyAsync(e => e.Id == id);
+
+    public async Task<(IEnumerable<TEntity>, int)> FindWithTotalCountAsync(ISpecification<TEntity> specification)
+    {
+        var query = GetQuery<TEntity>.From(DbSet, specification);
+        var count = await query.CountAsync();
+        var data = await query.Skip(specification.Skip).Take(specification.Take).ToListAsync();
+        return (data, count);
+    }
+
+    public async Task<double> SumAsync(ISpecification<TEntity> spec, Expression<Func<TEntity, double>> selector)
+        => await GetQuery<TEntity>.From(DbSet, spec).SumAsync(selector);
 }

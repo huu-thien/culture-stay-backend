@@ -11,6 +11,7 @@ using Serilog;
 using CultureStay.Application.Common.Configurations;
 using CultureStay.Application.Common.Interfaces;
 using CultureStay.Application.Services;
+using CultureStay.Application.Services.Interface;
 using CultureStay.Domain.Entities;
 using CultureStay.Domain.Repositories.Base;
 using CultureStay.Infrastructure.Data;
@@ -63,10 +64,11 @@ public static class ServiceExtension
 
 	public static IServiceCollection AddServices(this IServiceCollection services)
 	{
-		services.Scan(scan => scan.FromAssemblyOf<BaseService>()
-			.AddClasses(c => c.AssignableTo<BaseService>())
-			.AsSelf()
-			.WithScopedLifetime());
+		// services.Scan(scan => scan.FromAssemblyOf<BaseService>()
+		// 	.AddClasses(c => c.AssignableTo<BaseService>())
+		// 	.AsSelf()
+		// 	.WithScopedLifetime());
+		services.AddScoped<IPropertyService, PropertyService>();
 
 		return services;
 	}
