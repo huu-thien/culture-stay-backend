@@ -76,4 +76,35 @@ public class PropertyService (
         result.IsFavorite = property.Wishlists.Any(w => w.GuestId == currentGuestId);
         return result;
     }
+
+    public async Task<PaginatedList<GetPropertyResponse>> GetListPropertyByHostIdAsync(int hostId, PropertyQueryParameters pqp)
+    {
+        var role = currentUser.Role;
+        var propertyFilterSpec = new PropertyFilterSpecification(pqp, role, hostId);
+        
+        var (items, totalCount) = await propertyRepository.FindWithTotalCountAsync(propertyFilterSpec);
+        var propertyList = items.ToList();
+
+        var result = Mapper.Map<List<GetPropertyResponse>>(propertyList);
+        
+        // If logged in user, show favorite properties
+        var currentGuestId = 0;
+        if (!string.IsNullOrWhiteSpace(currentUser.Id))
+        {
+            currentGuestId =
+                (await guestRepository.FindOneAsync(new GuestByUserIdSpecification(int.Parse(currentUser.Id))))!.Id;
+        }
+
+        foreach (var item in result)
+        {
+            item.NumberOfReviews = propertyList.First(i => i.Id == item.Id).PropertyReviews.Count;
+            if(item.NumberOfReviews == 0) continue;
+            var property = propertyList.First(i => i.Id == item.Id);
+            item.Rating = property.PropertyReviews
+                .Average(r => (r.Accuracy + r.Communication + r.Cleanliness + r.Location + r.CheckIn + r.Value) / 6.0);
+            item.IsFavorite = propertyList.Any(i => i.Id == item.Id && i.Wishlists.Any(w => w.GuestId == currentGuestId));
+        }
+        
+        return new PaginatedList<GetPropertyResponse>(result, totalCount, pqp.PageIndex, pqp.PageSize);
+    }
 }
