@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 
 namespace CultureStay.Application.ViewModels.Property.Response;
 
-public class GetListPropertyResponse
+public class GetPropertyResponse
 {
     public int Id { get; set; }
     public PropertyType Type { get; set; }
@@ -45,6 +45,6 @@ public class MapperProfile : Profile
 {
     public MapperProfile()
     {
-        CreateMap<Domain.Entities.Property, GetListPropertyResponse>();
+        CreateMap<Domain.Entities.Property, GetPropertyResponse>();
     }
 }

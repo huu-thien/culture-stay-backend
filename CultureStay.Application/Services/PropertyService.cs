@@ -7,6 +7,7 @@ using CultureStay.Application.ViewModels.Property.Response;
 using CultureStay.Application.ViewModels.Property.Specifications;
 using CultureStay.Application.ViewModels.PropertyUtility.Response;
 using CultureStay.Domain.Entities;
+using CultureStay.Domain.Exceptions;
 using CultureStay.Domain.Repositories.Base;
 
 namespace CultureStay.Application.Services;
@@ -22,7 +23,7 @@ public class PropertyService (
 {
 
     
-    public async Task<PaginatedList<GetListPropertyResponse>> GetListPropertyAsync(PropertyQueryParameters pqp)
+    public async Task<PaginatedList<GetPropertyResponse>> GetListPropertyAsync(PropertyQueryParameters pqp)
     {
         var role = currentUser.Role;
         var propertyFilterSpec = new PropertyFilterSpecification(pqp, role);
@@ -31,7 +32,7 @@ public class PropertyService (
 
         var propertyList = items.ToList();
 
-        var result = Mapper.Map<List<GetListPropertyResponse>>(propertyList);
+        var result = Mapper.Map<List<GetPropertyResponse>>(propertyList);
         
         // If logged in user, show favorite properties
         var currentGuestId = 0;
@@ -54,6 +55,25 @@ public class PropertyService (
             item.IsFavorite = propertyList.Any(i => i.Id == item.Id && i.Wishlists.Any(w => w.GuestId == currentGuestId));
         }
         
-        return new PaginatedList<GetListPropertyResponse>(result, totalCount, pqp.PageIndex, pqp.PageSize);
+        return new PaginatedList<GetPropertyResponse>(result, totalCount, pqp.PageIndex, pqp.PageSize);
+    }
+
+    public async Task<GetPropertyResponse> GetPropertyByIdAsync(int id)
+    {
+        var propertyFilterSpec = new PropertyDetailSpecification(id);
+        var property = await propertyRepository.FindOneAsync(propertyFilterSpec)
+                        ?? throw new EntityNotFoundException(nameof(Property), id.ToString());
+
+        var result = Mapper.Map<GetPropertyResponse>(property);
+        result.NumberOfReviews = property.PropertyReviews.Count;
+        if (result.NumberOfReviews == 0) return result;
+        result.Rating = property.PropertyReviews
+            .Average(r => (r.Accuracy + r.Communication + r.Cleanliness + r.Location + r.CheckIn + r.Value) / 6.0);
+        
+        // If logged in user, show isFavorite property
+        if (string.IsNullOrWhiteSpace(currentUser.Id)) return result;
+        var currentGuestId = (await guestRepository.FindOneAsync(new GuestByUserIdSpecification(int.Parse(currentUser.Id))))!.Id;
+        result.IsFavorite = property.Wishlists.Any(w => w.GuestId == currentGuestId);
+        return result;
     }
 }
