@@ -22,4 +22,11 @@ public class PropertyController : ControllerBase
         var result = await _propertyService.GetListPropertyAsync(pqp);
         return Ok(result);
     }
+    
+    [HttpGet("{propertyId:int}")]
+    public async Task<IActionResult> GetPropertyById(int propertyId)
+    {
+        var result = await _propertyService.GetPropertyByIdAsync(propertyId);
+        return Ok(result);
+    }
 }

@@ -6,5 +6,6 @@ namespace CultureStay.Application.Services.Interface;
 
 public interface IPropertyService
 {
-    Task<PaginatedList<GetListPropertyResponse>> GetListPropertyAsync(PropertyQueryParameters propertyQueryParameters);
+    Task<PaginatedList<GetPropertyResponse>> GetListPropertyAsync(PropertyQueryParameters propertyQueryParameters);
+    Task<GetPropertyResponse> GetPropertyByIdAsync(int id);
 }
