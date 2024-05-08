@@ -29,4 +29,11 @@ public class PropertyController : ControllerBase
         var result = await _propertyService.GetPropertyByIdAsync(propertyId);
         return Ok(result);
     }
+
+    [HttpGet("host/{hostId:int}")]
+    public async Task<IActionResult> GetPropertyListByHostId(int hostId, [FromQuery] PropertyQueryParameters pqp)
+    {
+        var result = await _propertyService.GetListPropertyByHostIdAsync(hostId, pqp);
+        return Ok(result);
+    }
 }
