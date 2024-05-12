@@ -1,5 +1,7 @@
+using System.Net;
 using AutoMapper;
 using CultureStay.Application.Common.Interfaces;
+using CultureStay.Application.Services.Interface;
 using CultureStay.Application.ViewModels.Auth.Requests;
 using CultureStay.Application.ViewModels.Auth.Responses;
 using Google.Apis.Auth.OAuth2;
@@ -16,11 +18,11 @@ using CultureStay.Domain.Resources;
 namespace CultureStay.Application.Services;
 
 public class AuthService(
-	TokenService tokenService,
+	ITokenService tokenService,
 	UserManager<User> userManager,
 	IUnitOfWork unitOfWork,
 	IMapper mapper,
-	ICurrentUser currentUser) : BaseService(unitOfWork, mapper, currentUser)
+	ICurrentUser currentUser) : BaseService(unitOfWork, mapper, currentUser), IAuthService
 {
 	public async Task<LoginResponse> LoginAsync(LoginRequest request)
 	{
@@ -47,7 +49,7 @@ public class AuthService(
 		return new LoginResponse(token, refreshToken, userResponse, role);
 	}
 
-	public async Task RegisterAsync(RegisterRequest request)
+	public async Task<HttpStatusCode> RegisterAsync(RegisterRequest request)
 	{
 		var isEmailTaken = await userManager.FindByEmailAsync(request.Email) != null;
 		if (isEmailTaken)
@@ -70,12 +72,16 @@ public class AuthService(
 		{
 			var result = await userManager.CreateAsync(user, request.Password);
 			if (result.Succeeded)
+			{
 				result = await userManager.AddToRoleAsync(user, AppRole.User.ToValue());
+				if (result.Succeeded)
+				{
+					await UnitOfWork.CommitTransactionAsync();
+					return HttpStatusCode.OK; // Return status 200 if registration is successful
+				}
+			}
 
-			if (!result.Succeeded)
-				throw new AppException(result.Errors.First().Description);
-
-			await UnitOfWork.CommitTransactionAsync();
+			throw new AppException(result.Errors.First().Description);
 		}
 		catch
 		{
@@ -129,7 +135,7 @@ public class AuthService(
 		return new LoginResponse(token, refreshToken, userResponse, role);
 	}
 
-	private async Task<User> GetOrCreateUserAsync(Userinfo payload)
+	public async Task<User> GetOrCreateUserAsync(Userinfo payload)
 	{
 		var user = await userManager.FindByEmailAsync(payload.Email);
 		if (user != null) return user;

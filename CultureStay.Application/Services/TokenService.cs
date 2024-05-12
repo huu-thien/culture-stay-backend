@@ -4,6 +4,7 @@ using System.Text;
 using AutoMapper;
 using CultureStay.Application.Common.Configurations;
 using CultureStay.Application.Common.Interfaces;
+using CultureStay.Application.Services.Interface;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using CultureStay.Domain.Entities;
@@ -18,7 +19,7 @@ public class TokenService(
 	IRepositoryBase<RefreshToken> refreshTokenRepository,
 	IUnitOfWork unitOfWork,
 	IMapper mapper,
-	ICurrentUser currentUser) : BaseService(unitOfWork, mapper, currentUser)
+	ICurrentUser currentUser) : BaseService(unitOfWork, mapper, currentUser), ITokenService
 {
 	public string GenerateToken(User user)
 	{

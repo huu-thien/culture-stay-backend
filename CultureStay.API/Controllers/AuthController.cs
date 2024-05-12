@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using CultureStay.Application.Services;
+using CultureStay.Application.Services.Interface;
 using LoginRequest = CultureStay.Application.ViewModels.Auth.Requests.LoginRequest;
 using RegisterRequest = CultureStay.Application.ViewModels.Auth.Requests.RegisterRequest;
 
@@ -9,11 +10,11 @@ namespace CultureStay.Controllers;
 [Route("api/auth")]
 public class AuthController : ControllerBase
 {
-	private readonly AuthService _authService;
-	private readonly TokenService _tokenService;
+	private readonly IAuthService _authService;
+	private readonly ITokenService _tokenService;
 
-	public AuthController(AuthService authService,
-	                      TokenService tokenService)
+	public AuthController(IAuthService authService,
+	                      ITokenService tokenService)
 	{
 		_authService = authService;
 		_tokenService = tokenService;
@@ -22,8 +23,8 @@ public class AuthController : ControllerBase
 	[HttpPost("register")]
 	public async Task<IActionResult> Register(RegisterRequest request)
 	{
-		await _authService.RegisterAsync(request);
-		return Ok();
+		var result = await _authService.RegisterAsync(request);
+		return Ok(result);
 	}
 
 	[HttpPost("login")]

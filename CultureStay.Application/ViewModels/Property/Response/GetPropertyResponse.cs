@@ -40,11 +40,3 @@ public class GetPropertyResponse
     public PropertyStatus Status { get; set; }
     public string? RejectionReason { get; set; }
 }
-
-public class MapperProfile : Profile
-{
-    public MapperProfile()
-    {
-        CreateMap<Domain.Entities.Property, GetPropertyResponse>();
-    }
-}
