@@ -5,8 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace CultureStay.Controllers;
 
 
-[Route("api/properties")]
 [ApiController]
+[Route("api/properties")]
 public class PropertyController : ControllerBase
 {
     private readonly IPropertyService _propertyService;

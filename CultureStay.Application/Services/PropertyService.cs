@@ -108,3 +108,12 @@ public class PropertyService (
         return new PaginatedList<GetPropertyResponse>(result, totalCount, pqp.PageIndex, pqp.PageSize);
     }
 }
+
+
+public class PropertyMapping : Profile
+{
+    public PropertyMapping()
+    {
+        CreateMap<Domain.Entities.Property, GetPropertyResponse>();
+    }
+}

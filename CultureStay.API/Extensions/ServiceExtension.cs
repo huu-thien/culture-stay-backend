@@ -68,8 +68,10 @@ public static class ServiceExtension
 		// 	.AddClasses(c => c.AssignableTo<BaseService>())
 		// 	.AsSelf()
 		// 	.WithScopedLifetime());
+		services.AddScoped<ITokenService, TokenService>();
+		services.AddScoped<IAuthService, AuthService>();
 		services.AddScoped<IPropertyService, PropertyService>();
-
+		services.AddScoped<IReviewService, ReviewService>();
 		return services;
 	}
 
