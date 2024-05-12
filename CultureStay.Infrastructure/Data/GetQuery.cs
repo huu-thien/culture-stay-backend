@@ -1,7 +1,7 @@
 ﻿using CultureStay.Domain.Entities.Base;
 using CultureStay.Domain.Specification;
 using Microsoft.EntityFrameworkCore;
-
+using System.Linq.Dynamic.Core;
 
 namespace CultureStay.Infrastructure.Data;
 
@@ -37,22 +37,22 @@ public static class GetQuery<TEntity> where TEntity : EntityBase
                 include) => current.Include(include));
         
         // Searching
-        // if (!string.IsNullOrWhiteSpace(specification.SearchTerm))
-        // {
-        //     var searchClause = string.Empty;
-        //     foreach (var searchField in specification.SearchFields)
-        //     {
-        //         searchClause += searchClause == string.Empty ? string.Empty : " || ";
-        //         searchClause += $"{searchField} != null && {searchField}.ToLower().Contains(\"{specification.SearchTerm}\")";
-        //     }
-        //     query = query.Where(searchClause);
-        // }
+        if (!string.IsNullOrWhiteSpace(specification.SearchTerm))
+        {
+            var searchClause = string.Empty;
+            foreach (var searchField in specification.SearchFields)
+            {
+                searchClause += searchClause == string.Empty ? string.Empty : " || ";
+                searchClause += $"{searchField} != null && {searchField}.ToLower().Contains(\"{specification.SearchTerm}\")";
+            }
+            query = query.Where(searchClause);
+        }
 
         // Ordering
-        // if (specification.OrderByField != null)
-        //     query = specification.IsDescending
-        //         ? query.OrderBy(specification.OrderByField + " desc")
-        //         : query.OrderBy(specification.OrderByField);
+        if (specification.OrderByField != null)
+            query = specification.IsDescending
+                ? query.OrderBy(specification.OrderByField + " desc")
+                : query.OrderBy(specification.OrderByField);
 
         return query;
     }
