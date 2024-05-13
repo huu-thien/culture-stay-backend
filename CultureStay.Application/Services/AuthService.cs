@@ -1,6 +1,7 @@
 using System.Net;
 using AutoMapper;
 using CultureStay.Application.Common.Interfaces;
+using CultureStay.Application.Common.Specifications;
 using CultureStay.Application.Services.Interface;
 using CultureStay.Application.ViewModels.Auth.Requests;
 using CultureStay.Application.ViewModels.Auth.Responses;
@@ -20,7 +21,9 @@ namespace CultureStay.Application.Services;
 public class AuthService(
 	ITokenService tokenService,
 	UserManager<User> userManager,
-	IUnitOfWork unitOfWork,
+	IRepositoryBase<Guest> guestRepository,	
+	IRepositoryBase<Host> hostRepository,
+ 	IUnitOfWork unitOfWork,
 	IMapper mapper,
 	ICurrentUser currentUser) : BaseService(unitOfWork, mapper, currentUser), IAuthService
 {
@@ -43,7 +46,8 @@ public class AuthService(
 
 		await tokenService.SaveRefreshTokenAsync(refreshToken, user.Id, expires);
 
-		var userResponse = Mapper.Map<UserResponse>(user);
+		var userResponse = Mapper.Map<GetUserResponse>(user);
+		userResponse.IsHost = await hostRepository.AnyAsync(new HostByUserIdSpecification(user.Id));
 		var role = userManager.GetRolesAsync(user).Result.First();
 
 		return new LoginResponse(token, refreshToken, userResponse, role);
@@ -65,6 +69,7 @@ public class AuthService(
 			Email = request.Email,
 			FullName = request.FullName
 		};
+		
 
 		await UnitOfWork.BeginTransactionAsync();
 
@@ -76,11 +81,12 @@ public class AuthService(
 				result = await userManager.AddToRoleAsync(user, AppRole.User.ToValue());
 				if (result.Succeeded)
 				{
+					guestRepository.Add(new Guest { UserId = user.Id });
+					await unitOfWork.SaveChangesAsync();
 					await UnitOfWork.CommitTransactionAsync();
 					return HttpStatusCode.OK; // Return status 200 if registration is successful
 				}
 			}
-
 			throw new AppException(result.Errors.First().Description);
 		}
 		catch
@@ -122,14 +128,15 @@ public class AuthService(
 		}).Userinfo.Get().ExecuteAsync();
 
 		var user = await GetOrCreateUserAsync(userInfo);
-
+		var userDto = Mapper.Map<GetUserResponse>(user);
+		userDto.IsHost = await hostRepository.AnyAsync(new HostByUserIdSpecification(user.Id));
+		
 		var token = tokenService.GenerateToken(user);
 		var (refreshToken, expires) = tokenService.GenerateRefreshToken();
 
 		await tokenService.SaveRefreshTokenAsync(refreshToken, user.Id, expires);
 		
-		var userResponse = Mapper.Map<UserResponse>(user);
-		// var role = userManager.GetRolesAsync(user).Result.First();
+		var userResponse = Mapper.Map<GetUserResponse>(user);
 		var role = AppRole.User.ToValue();
 
 		return new LoginResponse(token, refreshToken, userResponse, role);

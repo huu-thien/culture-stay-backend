@@ -13,6 +13,7 @@ public abstract class EntityBase : IAuditableEntity
     public void AddDomainEvent(INotification domainEvent) => _domainEvents.Add(domainEvent);
     public void RemoveDomainEvent(INotification domainEvent) => _domainEvents.Remove(domainEvent);
     public void ClearDomainEvents() => _domainEvents.Clear();
+    public bool IsDeleted { get; set; }
     public int? CreatedBy { get; set; }
     public DateTime? CreatedOn { get; set; }
     public int? UpdatedBy { get; set; }
