@@ -72,6 +72,7 @@ public static class ServiceExtension
 		services.AddScoped<IAuthService, AuthService>();
 		services.AddScoped<IPropertyService, PropertyService>();
 		services.AddScoped<IReviewService, ReviewService>();
+		services.AddScoped<IWishlistService, WishlistService>();
 		return services;
 	}
 
@@ -129,6 +130,8 @@ public static class ServiceExtension
 				options.TokenValidationParameters = new TokenValidationParameters
 				{
 					ValidateIssuerSigningKey = true,
+					ValidateAudience = false,
+					ValidateIssuer = false,
 					ValidateLifetime = true,
 					IssuerSigningKey =
 						new SymmetricSecurityKey(

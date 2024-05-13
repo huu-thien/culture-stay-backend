@@ -11,6 +11,7 @@
       <Folder Include="ViewModels\PropertyImage\Request\" />
       <Folder Include="ViewModels\PropertyUtility\Request\" />
       <Folder Include="ViewModels\Property\Request\" />
+      <Folder Include="ViewModels\Wishlist\Request\" />
     </ItemGroup>
 
     <ItemGroup>

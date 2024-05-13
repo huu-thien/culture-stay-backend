@@ -111,5 +111,7 @@ public class ReviewMapping : Profile
             .ForMember(dto => dto.ReviewTime, opt => opt.MapFrom(hr => hr.LastModifiedAt))
             .ForMember(dto => dto.AverageRating, opt => opt
                 .MapFrom(hr => ((double)(hr.Cleanliness + hr.Communication + hr.CheckIn + hr.Accuracy + hr.Location + hr.Value)) / 6));
+        
+        CreateMap<CreatePropertyReviewRequest, PropertyReview>();
     }
 }
