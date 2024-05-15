@@ -124,7 +124,7 @@ public class AuthService(
 		var userInfo = await new Oauth2Service(new BaseClientService.Initializer
 		{
 			HttpClientInitializer = GoogleCredential.FromAccessToken(accessToken),
-			ApplicationName = ""
+			ApplicationName = "CultureStay"
 		}).Userinfo.Get().ExecuteAsync();
 
 		var user = await GetOrCreateUserAsync(userInfo);
