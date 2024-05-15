@@ -50,7 +50,7 @@ public class WishlistService(
             if(item.NumberOfReviews == 0) continue;
             var property = propertyList.First(i => i.Id == item.Id);
             item.Rating = property.PropertyReviews
-                .Average(r => (r.Accuracy + r.Communication + r.Cleanliness + r.Location + r.CheckIn + r.Value) / 6);
+                .Average(r => (r.Accuracy + r.Communication + r.Cleanliness + r.Location + r.CheckIn + r.Value) / 6.0);
         }
         result.ForEach(item => item.IsFavorite = true);
         return new PaginatedList<GetPropertyResponse>(result, totalCount, pg.PageIndex, pg.PageSize);
