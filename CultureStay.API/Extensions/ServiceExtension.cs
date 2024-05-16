@@ -73,6 +73,7 @@ public static class ServiceExtension
 		services.AddScoped<IPropertyService, PropertyService>();
 		services.AddScoped<IReviewService, ReviewService>();
 		services.AddScoped<IWishlistService, WishlistService>();
+		services.AddScoped<IHostService, HostService>();
 		return services;
 	}
 
