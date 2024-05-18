@@ -11,6 +11,6 @@ public class MapperProfile : Profile
 {
 	public MapperProfile()
 	{
-		CreateMap<User, UserResponse>();
+		CreateMap<Domain.Entities.User, UserResponse>();
 	}
 }
