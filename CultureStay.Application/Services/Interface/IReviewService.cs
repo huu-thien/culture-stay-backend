@@ -10,10 +10,16 @@ public interface IReviewService
     Task<PaginatedList<GetPropertyReviewResponse>> GetListPropertyReviewAsync(int propertyId,
         ReviewQueryParameters reviewQueryParameters);
     Task<GetPropertyReviewResponse> CreatePropertyReviewAsync(int propertyId, CreatePropertyReviewRequest createPropertyReviewRequest);
-    Task<GetPropertyReviewResponse> UpdatePropertyReviewAsync(int propertyId, int reviewId, CreatePropertyReviewRequest createPropertyReviewRequest);
     Task DeletePropertyReviewAsync(int propertyReviewId);
     
-    // Guest Review
     // Host Review
+    Task<PaginatedList<GetReviewResponse>> GetHostReviewsAsync(int hostId, ReviewQueryParameters reviewQueryParameters);
+    Task<GetReviewResponse> CreateHostReviewAsync(int hostId, CreateReviewRequest createReviewRequest);
+    Task DeleteHostReviewAsync(int hostReviewId);
+    
+    // Guest Review
+    Task<PaginatedList<GetReviewResponse>> GetGuestReviewsAsync(int guestId, ReviewQueryParameters reviewQueryParameters);
+    Task<GetReviewResponse> CreateGuestReviewAsync(int guestId, CreateReviewRequest createReviewRequest);
+    Task DeleteGuestReviewAsync(int guestReviewId);
 
 }
