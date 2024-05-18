@@ -46,4 +46,53 @@ public class ReviewController : ControllerBase
         await _reviewService.DeletePropertyReviewAsync(reviewId);
         return NoContent();
     }
+    
+    
+    // Host Review
+    [HttpGet("host/{hostId}")]
+    public async Task<IActionResult> GetHostReviews(int hostId, [FromQuery] ReviewQueryParameters rqp)
+    {
+        var result = await _reviewService.GetHostReviewsAsync(hostId, rqp);
+        return Ok(result);
+    }
+    
+    [Authorize]
+    [HttpPost("host/{hostId}")]
+    public async Task<IActionResult> CreateHostReview(int hostId, CreateReviewRequest request)
+    {
+        var result = await _reviewService.CreateHostReviewAsync(hostId, request);
+        return Ok(result);
+    }
+    
+    [Authorize]
+    [HttpDelete("host/{reviewId}")]
+    public async Task<IActionResult> DeleteHostReview(int reviewId)
+    {
+        await _reviewService.DeleteHostReviewAsync(reviewId);
+        return NoContent();
+    }
+    
+    // Guest Review
+    [HttpGet("guest/{guestId}")]
+    public async Task<IActionResult> GetGuestReviews(int guestId, [FromQuery] ReviewQueryParameters rqp)
+    {
+        var result = await _reviewService.GetGuestReviewsAsync(guestId, rqp);
+        return Ok(result);
+    }
+    
+    [Authorize]
+    [HttpPost("guest/{guestId}")]
+    public async Task<IActionResult> CreateGuestReview(int guestId, CreateReviewRequest request)
+    {
+        var result = await _reviewService.CreateGuestReviewAsync(guestId, request);
+        return Ok(result);
+    }
+    
+    [Authorize]
+    [HttpDelete("guest/{reviewId}")]
+    public async Task<IActionResult> DeleteGuestReview(int reviewId)
+    {
+        await _reviewService.DeleteGuestReviewAsync(reviewId);
+        return NoContent();
+    }
 }
