@@ -2,6 +2,8 @@
 using CultureStay.Application.ViewModels.Auth.Responses;
 using CultureStay.Application.ViewModels.Guest.Response;
 using CultureStay.Application.ViewModels.Host.Response;
+using CultureStay.Application.ViewModels.User.Request;
+using CultureStay.Application.ViewModels.User.Response;
 using CultureStay.Domain.Entities;
 
 namespace CultureStay.Application.MappingProfile;
@@ -34,5 +36,9 @@ public class Profiles : Profile
             .ForMember(res => res.Address, opt => opt.MapFrom(h => h.User.Address))
             .ForMember(res => res.City, opt => opt.MapFrom(h => h.User.City))
             .ForMember(res=> res.JoinedAt, opt => opt.MapFrom(h => h.CreatedAt));
+
+        CreateMap<User, GetUsersForAdminResponse>()
+            .ForMember(res => res.CreatedAt, opt => opt.MapFrom(u => u.Guest.CreatedAt));
+        CreateMap<UpdateUserInfoRequest, User>();
     }
 }
