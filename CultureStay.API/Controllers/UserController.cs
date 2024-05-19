@@ -1,4 +1,5 @@
 ﻿using CultureStay.Application.Services.Interface;
+using CultureStay.Application.ViewModels;
 using CultureStay.Application.ViewModels.User.Request;
 using CultureStay.Application.ViewModels.User.Response;
 using Microsoft.AspNetCore.Mvc;
@@ -20,7 +21,7 @@ public class UserController : ControllerBase
     public async Task<IActionResult> GetUserById(int id)
     {
         var result = await _userService.GetUserByIdAsync(id);
-        return Ok(result);
+        return Ok(new BaseResponse<GetUsersForAdminResponse>{Message = "Get User Success", Data = result});
     }
     
     [HttpGet]
@@ -34,6 +35,6 @@ public class UserController : ControllerBase
     public async Task<IActionResult> UpdateUser(int id, UpdateUserInfoRequest request)
     {
         var result = await _userService.UpdateUserAsync(id, request);
-        return Ok(result);
+        return Ok(new BaseResponse<GetUsersForAdminResponse>{Message = "Update User Success", Data = result});
     }
 }
