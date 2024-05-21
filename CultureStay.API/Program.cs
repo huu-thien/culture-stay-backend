@@ -4,6 +4,7 @@ using Serilog;
 using CultureStay.Application.Services;
 using CultureStay.Extensions;
 using CultureStay.Middlewares;
+using Minio;
 using IRequest = CultureStay.Application.ViewModels.IRequest;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,6 +21,7 @@ builder.Services
     .AddSwagger("CultureStay API v1")
     .AddRepositories()
     .AddServices()
+    .AddMinio(builder.Configuration)
     .AddCurrentUser()
     .AddQuartz()
     .AddAutoMapper(typeof(BaseService).Assembly)

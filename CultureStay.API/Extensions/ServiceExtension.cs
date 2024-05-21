@@ -18,7 +18,7 @@ using CultureStay.Infrastructure.Data;
 using CultureStay.Infrastructure.Email;
 using CultureStay.Infrastructure.Repositories.Base;
 using CultureStay.Services;
-
+using Minio;
 namespace CultureStay.Extensions;
 
 public static class ServiceExtension
@@ -117,6 +117,16 @@ public static class ServiceExtension
 		// builder.Configuration.AddSystemsManager($"/{environment}", TimeSpan.FromMinutes(5));
 
 		builder.Services.Configure<TokenSettings>(builder.Configuration.GetSection("TokenSettings"));
+		builder.Services.Configure<MinioSettings>(builder.Configuration.GetSection("MinioSettings"));
+	}
+	public static IServiceCollection AddMinio(this IServiceCollection services, IConfiguration configuration)
+	{
+		// services.AddScoped<IImageUploader, MinioUploader>();
+		services.AddMinio(cfg => cfg
+			.WithEndpoint(configuration["MinioSettings:Endpoint"])
+			.WithCredentials(configuration["MinioSettings:AccessKey"], configuration["MinioSettings:SecretKey"]));
+		
+		return services;
 	}
 
 	public static IServiceCollection AddAuthentication(this IServiceCollection services,
