@@ -1,4 +1,6 @@
 ﻿using CultureStay.Application.Services.Interface;
+using CultureStay.Application.ViewModels;
+using CultureStay.Application.ViewModels.Guest.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,7 +20,7 @@ public class GuestController : ControllerBase
     public async Task<IActionResult> GetGuestById(int guestId)
     {
         var result = await _guestService.GetGuestByIdAsync(guestId);
-        return Ok(result);
+        return Ok(new BaseResponse<GetGuestResponse>{Message = "Get guest successfully", Data = result});
     }
     
     /// <summary>
@@ -29,6 +31,6 @@ public class GuestController : ControllerBase
     public async Task<IActionResult> CheckGuestIsStayed(int guestId)
     {
         var result = await _guestService.CheckGuestIsStayedAsync(guestId);
-        return Ok(result);
+        return Ok(new BaseResponse<bool>{Message = "Check guest is stayed successfully", Data = result});
     }
 }

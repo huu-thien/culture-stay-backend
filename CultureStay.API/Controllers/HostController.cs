@@ -1,5 +1,7 @@
 ﻿using CultureStay.Application.Common;
 using CultureStay.Application.Services.Interface;
+using CultureStay.Application.ViewModels;
+using CultureStay.Application.ViewModels.Host.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,7 +22,7 @@ public class HostController : ControllerBase
     public async Task<IActionResult> GetHostAsync(int hostId)
     {
         var host = await _hostService.GetHostByIdAsync(hostId);
-        return Ok(host);
+        return Ok(new BaseResponse<GetHostResponse>{Message = "Get host successfully", Data = host});
     }
     
     [HttpGet("user/{userId:int}")]
@@ -42,6 +44,6 @@ public class HostController : ControllerBase
     public async Task<IActionResult> CheckGuestStayedInPropertyOfHost(int hostId)
     {
         var result = await _hostService.CheckHostIsStayedAsync(hostId);
-        return Ok(result);
+        return Ok(new BaseResponse<bool>{Message = "Check host rented guest yet", Data = result});
     }
 }

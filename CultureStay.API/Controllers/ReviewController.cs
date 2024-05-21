@@ -1,5 +1,6 @@
 ﻿
 using CultureStay.Application.Services.Interface;
+using CultureStay.Application.ViewModels;
 using CultureStay.Application.ViewModels.Review.QueryParameters;
 using CultureStay.Application.ViewModels.Review.Response;
 using Microsoft.AspNetCore.Authorization;
@@ -93,6 +94,6 @@ public class ReviewController : ControllerBase
     public async Task<IActionResult> DeleteGuestReview(int reviewId)
     {
         await _reviewService.DeleteGuestReviewAsync(reviewId);
-        return NoContent();
+        return Ok(new BaseResponse{Message = "Delete review successfully"});
     }
 }

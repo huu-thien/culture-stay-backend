@@ -141,7 +141,7 @@ public class ReviewService (
         
         // Check user have permission to delete the review
         var currentUserId = int.Parse(currentUser.Id!);
-        var currentUserRole = currentUser.Role ?? throw new Exception("User role is not defined");
+        var currentUserRole = currentUser.Role!;
 
         if (!string.Equals(currentUserRole, AppRole.Admin, StringComparison.CurrentCultureIgnoreCase))
         {
@@ -204,7 +204,8 @@ public class ReviewService (
         
         // Check user have permission to delete the review
         var currentUserId = int.Parse(currentUser.Id!);
-        var currentUserRole = currentUser.Role ?? throw new Exception("User role is not defined");
+        var currentUserRole = currentUser.Role!;
+        Console.WriteLine("currentUserRole: " + currentUserRole);
 
         if (currentUserRole != AppRole.Admin)
         {

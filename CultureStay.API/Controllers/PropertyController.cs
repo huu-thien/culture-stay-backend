@@ -1,4 +1,6 @@
 ﻿using CultureStay.Application.Services.Interface;
+using CultureStay.Application.ViewModels;
+using CultureStay.Application.ViewModels.Property.Response;
 using CultureStay.Application.ViewModels.PropertyUtility.Response;
 using Microsoft.AspNetCore.Mvc;
 
@@ -27,7 +29,7 @@ public class PropertyController : ControllerBase
     public async Task<IActionResult> GetPropertyById(int propertyId)
     {
         var result = await _propertyService.GetPropertyByIdAsync(propertyId);
-        return Ok(result);
+        return Ok(new BaseResponse<GetPropertyResponse>{Message = "Get property successfully", Data = result});
     }
 
     [HttpGet("host/{hostId:int}")]
