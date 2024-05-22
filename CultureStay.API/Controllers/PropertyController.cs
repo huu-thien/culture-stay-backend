@@ -38,4 +38,11 @@ public class PropertyController : ControllerBase
         var result = await _propertyService.GetListPropertyByHostIdAsync(hostId, pqp);
         return Ok(result);
     }
+    
+    [HttpGet("{propertyId:int}/is-stayed")]
+    public async Task<IActionResult> IsStayed(int propertyId)
+    {
+        var result = await _propertyService.IsStayedAsync(propertyId);
+        return Ok(new BaseResponse<bool>{Message = "Check stayed successfully", Data = result});
+    }
 }
