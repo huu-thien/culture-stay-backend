@@ -18,4 +18,8 @@ public interface IPropertyService
     Task<GetPropertyResponse> UpdatePropertyAsync(int id, CreatePropertyRequest updatePropertyRequest);
     
     Task DeletePropertyAsync(int id);
+    
+    Task ConfirmCreatePropertyRequestAsync(int propertyId);
+    
+    Task RejectCreatePropertyRequestAsync(int propertyId, RejectPropertyRequest rejectPropertyRequest);
 }

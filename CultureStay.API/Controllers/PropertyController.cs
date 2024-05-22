@@ -71,4 +71,20 @@ public class PropertyController : ControllerBase
         await _propertyService.DeletePropertyAsync(propertyId);
         return Ok(new BaseResponse<string>{Message = "Delete property successfully"});
     }
+    
+    [Authorize]
+    [HttpPost("{propertyId:int}/confirm")]
+    public async Task<IActionResult> ConfirmCreatePropertyRequest(int propertyId)
+    {
+        await _propertyService.ConfirmCreatePropertyRequestAsync(propertyId);
+        return Ok(new BaseResponse<string>{Message = "Confirm create property request successfully"});
+    }
+    
+    [Authorize]
+    [HttpPost("{propertyId:int}/reject")]
+    public async Task<IActionResult> RejectCreatePropertyRequest(int propertyId, [FromBody] RejectPropertyRequest request)
+    {
+        await _propertyService.RejectCreatePropertyRequestAsync(propertyId, request);
+        return Ok(new BaseResponse<string>{Message = "Reject create property request successfully"});
+    }
 }
