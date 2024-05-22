@@ -3,6 +3,7 @@ using CultureStay.Application.Common.Interfaces;
 using CultureStay.Application.Common.Models;
 using CultureStay.Application.Common.Specifications;
 using CultureStay.Application.Services.Interface;
+using CultureStay.Application.ViewModels.Booking.Specifications;
 using CultureStay.Application.ViewModels.Property.Response;
 using CultureStay.Application.ViewModels.Property.Specifications;
 using CultureStay.Application.ViewModels.PropertyUtility.Response;
@@ -107,6 +108,18 @@ public class PropertyService (
         
         return new PaginatedList<GetPropertyResponse>(result, totalCount, pqp.PageIndex, pqp.PageSize);
     }
+
+    public async Task<bool> IsStayedAsync(int propertyId)
+    {
+        var currentUserId = int.TryParse(currentUser.Id, out var id) ? id : 0;
+        if(currentUserId == 0) return false;
+        
+        var guest = await guestRepository.FindOneAsync(new GuestByUserIdSpecification(currentUserId));
+        if(guest is null) return false;
+        
+        var spec = new IsGuestStayedSpecification(propertyId, guest.Id);
+        return await bookingRepository.AnyAsync(spec);
+    }
 }
 
 
@@ -114,6 +127,7 @@ public class PropertyMapping : Profile
 {
     public PropertyMapping()
     {
-        CreateMap<Domain.Entities.Property, GetPropertyResponse>();
+        CreateMap<Domain.Entities.Property, GetPropertyResponse>()
+            .ForMember(res => res.HostName, opt => opt.MapFrom(p => p.Host.User.FullName));
     }
 }
