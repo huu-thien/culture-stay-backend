@@ -4,10 +4,13 @@ using CultureStay.Application.Common.Models;
 using CultureStay.Application.Common.Specifications;
 using CultureStay.Application.Services.Interface;
 using CultureStay.Application.ViewModels.Booking.Specifications;
+using CultureStay.Application.ViewModels.Property.Request;
 using CultureStay.Application.ViewModels.Property.Response;
 using CultureStay.Application.ViewModels.Property.Specifications;
+using CultureStay.Application.ViewModels.PropertyImage.Response;
 using CultureStay.Application.ViewModels.PropertyUtility.Response;
 using CultureStay.Domain.Entities;
+using CultureStay.Domain.Enum;
 using CultureStay.Domain.Exceptions;
 using CultureStay.Domain.Repositories.Base;
 
@@ -120,6 +123,48 @@ public class PropertyService (
         var spec = new IsGuestStayedSpecification(propertyId, guest.Id);
         return await bookingRepository.AnyAsync(spec);
     }
+
+    public async Task<GetPropertyResponse> CreatePropertyAsync(CreatePropertyRequest request)
+    {
+        // Get hostId from current user
+        var userId = int.Parse(currentUser.Id!);
+        var host = await hostRepository.FindOneAsync(new HostByUserIdSpecification(userId));
+        
+        // Create host profile if not exist
+        if (host is null)
+        {
+            host = new Host {UserId = userId};
+            hostRepository.Add(host);
+        }
+        
+        // Create property status pending
+        var property = Mapper.Map<Property>(request);
+        var propertyUtilities = Mapper.Map<PropertyUtility>(request.PropertyUtilities);
+        property.PropertyUtilities.Add(propertyUtilities);
+        property.Status = PropertyStatus.Pending;
+        host.Properties.Add(property);
+        
+        await UnitOfWork.SaveChangesAsync();
+        return Mapper.Map<GetPropertyResponse>(property);
+    }
+
+    public async Task<GetPropertyResponse> UpdatePropertyAsync(int id, CreatePropertyRequest request)
+    {
+        var property = await propertyRepository.GetByIdAsync(id)
+                       ?? throw new EntityNotFoundException(nameof(Property), id.ToString());
+        
+        Mapper.Map(request, property);
+        await unitOfWork.SaveChangesAsync();
+        return Mapper.Map<GetPropertyResponse>(property);
+    }
+
+    public async Task DeletePropertyAsync(int id)
+    {
+        var property = await propertyRepository.GetByIdAsync(id)
+                       ?? throw new EntityNotFoundException(nameof(Property), id.ToString()); 
+        propertyRepository.Delete(property);
+        await unitOfWork.SaveChangesAsync();
+    }
 }
 
 
@@ -127,7 +172,14 @@ public class PropertyMapping : Profile
 {
     public PropertyMapping()
     {
-        CreateMap<Domain.Entities.Property, GetPropertyResponse>()
+        CreateMap<Property, GetPropertyResponse>()
             .ForMember(res => res.HostName, opt => opt.MapFrom(p => p.Host.User.FullName));
+
+        CreateMap<PropertyImage, GetPropertyImageResponse>();
+        CreateMap<PropertyUtility, GetPropertyUtilityResponse>();
+        CreateMap<CreatePropertyRequest, Property>()
+            .ForMember(p => p.PropertyUtilities, opt => opt.Ignore());
+        CreateMap<CreatePropertyImageRequest, PropertyImage>();
+        CreateMap<PropertyUtilityResponse, PropertyUtility>();
     }
 }
