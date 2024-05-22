@@ -165,6 +165,25 @@ public class PropertyService (
         propertyRepository.Delete(property);
         await unitOfWork.SaveChangesAsync();
     }
+
+    public async Task ConfirmCreatePropertyRequestAsync(int propertyId)
+    {
+        var property = await propertyRepository.GetByIdAsync(propertyId)
+                       ?? throw new EntityNotFoundException(nameof(Property), propertyId.ToString());
+        
+        property.Status = PropertyStatus.Approved;
+        await unitOfWork.SaveChangesAsync();
+    }
+
+    public async Task RejectCreatePropertyRequestAsync(int propertyId, RejectPropertyRequest request)
+    {
+        var property = await propertyRepository.GetByIdAsync(propertyId)
+                       ?? throw new EntityNotFoundException(nameof(Property), propertyId.ToString());
+        
+        property.Status = PropertyStatus.Rejected;
+        property.RejectionReason = request.Reason;
+        await unitOfWork.SaveChangesAsync();
+    }
 }
 
 
