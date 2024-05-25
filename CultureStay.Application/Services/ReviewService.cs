@@ -56,7 +56,7 @@ public class ReviewService (
             .FindOneAsync(new PropertyReviewByIdsSpecification(propertyId, request.GuestId));
         
         // Update the existing review or create new one
-        if (propertyReview != null) Mapper.Map<PropertyReview>(request);
+        if (propertyReview != null) Mapper.Map(request, propertyReview);
         else
         {
             propertyReview = Mapper.Map<PropertyReview>(request);
