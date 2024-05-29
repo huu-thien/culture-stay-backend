@@ -76,6 +76,7 @@ public static class ServiceExtension
 		services.AddScoped<IHostService, HostService>();
 		services.AddScoped<IGuestService, GuestService>();
 		services.AddScoped<IUserService, UserService>();
+		services.AddScoped<IBookingService, BookingService>();
 		return services;
 	}
 

@@ -8,7 +8,6 @@
 
     <ItemGroup>
       <Folder Include="Helpers\" />
-      <Folder Include="ViewModels\Booking\Response\" />
       <Folder Include="ViewModels\PropertyImage\Request\" />
       <Folder Include="ViewModels\PropertyUtility\Request\" />
       <Folder Include="ViewModels\Wishlist\Request\" />
