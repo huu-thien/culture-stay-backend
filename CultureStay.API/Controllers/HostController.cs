@@ -29,7 +29,7 @@ public class HostController : ControllerBase
     public async Task<IActionResult> GetHostByUserIdAsync(int userId)
     {
         var host = await _hostService.GetHostByUserIdAsync(userId);
-        return Ok(host);
+        return Ok(new BaseResponse<GetHostResponse>{Message = "Get host successfully", Data = host});
     }
     
     [HttpGet]
