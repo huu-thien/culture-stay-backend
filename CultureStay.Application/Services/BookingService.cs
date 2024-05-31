@@ -65,7 +65,7 @@ public class BookingService (
         
         // Map property info to booking
         var booking = Mapper.Map<Booking>(request);
-        booking.Status = BookingStatus.Confirmed;
+        booking.Status = BookingStatus.Pending;
         
         // Save booking
         bookingRepository.Add(booking);
@@ -107,8 +107,8 @@ public class BookingService (
             throw new InvalidBookingDateException("Property is already booked for the selected dates");
         
         // Check if number of guests is valid
-        if(request.NumberOfGuest <= property.MaxGuestCount)
-            throw new InvalidBookingDateException($"Number of adults must be less than {property.MaxGuestCount}");
+        if(request.NumberOfGuest > property.MaxGuestCount)
+            throw new InvalidBookingDateException($"Number of guest must be less than {property.MaxGuestCount}");
         
         // Check if guest is booking his own property
         var guestUserId = int.Parse(currentUser.Id!);

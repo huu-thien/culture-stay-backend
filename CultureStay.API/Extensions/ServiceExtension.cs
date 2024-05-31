@@ -9,6 +9,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using CultureStay.Application.Common.Configurations;
+using CultureStay.Application.Common.Helpers;
 using CultureStay.Application.Common.Interfaces;
 using CultureStay.Application.Services;
 using CultureStay.Application.Services.Interface;
@@ -77,6 +78,9 @@ public static class ServiceExtension
 		services.AddScoped<IGuestService, GuestService>();
 		services.AddScoped<IUserService, UserService>();
 		services.AddScoped<IBookingService, BookingService>();
+		services.AddScoped<ICancellationService, CancellationService>();
+		services.AddScoped<IEmailSender, EmailSender>();
+		services.AddScoped<IMailTemplateHelper, MailTemplateHelper>();
 		return services;
 	}
 

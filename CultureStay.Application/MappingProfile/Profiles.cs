@@ -2,11 +2,14 @@
 using CultureStay.Application.ViewModels.Auth.Responses;
 using CultureStay.Application.ViewModels.Booking.Request;
 using CultureStay.Application.ViewModels.Booking.Response;
+using CultureStay.Application.ViewModels.Cancellation.Request;
+using CultureStay.Application.ViewModels.Cancellation.Response;
 using CultureStay.Application.ViewModels.Guest.Response;
 using CultureStay.Application.ViewModels.Host.Response;
 using CultureStay.Application.ViewModels.User.Request;
 using CultureStay.Application.ViewModels.User.Response;
 using CultureStay.Domain.Entities;
+using CultureStay.Domain.Enum;
 
 namespace CultureStay.Application.MappingProfile;
 
@@ -68,5 +71,13 @@ public class Profiles : Profile
 
         CreateMap<Booking, GetBookingForPropertyResponse>();
         CreateMap<CreateBookingRequest, Booking>();
+        
+        CreateMap<CreateCancellationRequest, CancellationTicket>()
+            .ForMember(ct => ct.CancellationReasonNote, opt => opt.MapFrom(c => c.Reason))
+            .ForMember(ct => ct.Attachments, opt => opt.MapFrom(c => c.Attachments.Select(a => new CancellationTicketAttachment {Url = a})));
+        
+        CreateMap<CancellationTicket, GetCancellationResponse>()
+            .ForMember(res => res.IssuerId, opt => opt.MapFrom(ct => ct.CreatedBy))
+            .ForMember(res => res.Attachments, opt => opt.MapFrom(ct => ct.Attachments.Select(a => a.Url)));
     }
 }
