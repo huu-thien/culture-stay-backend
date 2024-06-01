@@ -24,6 +24,7 @@ builder.Services
     .AddMinio(builder.Configuration)
     .AddCurrentUser()
     .AddQuartz()
+    .AddEmailSender()
     .AddAutoMapper(typeof(BaseService).Assembly)
     .AddProblemDetails()
     .AddExceptionHandler<GlobalExceptionHandler>()

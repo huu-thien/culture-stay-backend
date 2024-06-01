@@ -141,7 +141,7 @@ public class PropertyService (
         var property = Mapper.Map<Property>(request);
         var propertyUtilities = Mapper.Map<PropertyUtility>(request.PropertyUtilities);
         property.PropertyUtilities.Add(propertyUtilities);
-        property.Status = PropertyStatus.Pending;
+        property.Status = PropertyStatus.Approved;
         host.Properties.Add(property);
         
         await UnitOfWork.SaveChangesAsync();
