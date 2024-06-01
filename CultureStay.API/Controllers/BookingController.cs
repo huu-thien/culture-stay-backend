@@ -26,7 +26,7 @@ public class BookingController : ControllerBase
     public async Task<IActionResult> GetListBookingForHostAsync(int hostId, [FromQuery] BookingQueryParameters bqp)
     {
         var result = await _bookingService.GetBookingsForHostAsync(hostId, bqp);
-        return Ok(new BaseResponse<PaginatedList<GetBookingForHostResponse>>{Message = "Get booking for guest successfully", Data = result});
+        return Ok(result);
     }
     
     [HttpGet("guest/{guestId:int}")]
@@ -34,7 +34,7 @@ public class BookingController : ControllerBase
     public async Task<IActionResult> GetListBookingForGuestAsync(int guestId, [FromQuery] BookingQueryParameters bqp)
     {
         var result = await _bookingService.GetBookingsForGuestAsync(guestId, bqp);
-        return Ok(new BaseResponse<PaginatedList<GetBookingForGuestResponse>>{Message = "Get booking for guest successfully", Data = result});
+        return Ok(result);
     }
     
     [HttpGet("property/{propertyId:int}")]

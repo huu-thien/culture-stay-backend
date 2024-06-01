@@ -11,7 +11,7 @@ public class ActiveBookingBetweenDatesSpecification : Specification<Domain.Entit
         // Ngay Checkout cua booking nay co the la ngay Checkin cua
         AddFilter(b => b.PropertyId == propertyId);
         AddFilter(b => b.Status != BookingStatus.Rejected && b.Status != BookingStatus.CancelledAfterCheckIn 
-                                                          && b.Status != BookingStatus.Completed);
+                                                          && b.Status != BookingStatus.Completed && b.Status != BookingStatus.CancelledBeforeCheckIn);
         AddFilter(b => (b.CheckOutDate.Date <= toDate.Date && b.CheckOutDate.Date > fromDate.Date) || 
                        (b.CheckInDate.Date <= toDate.Date && b.CheckInDate.Date >= fromDate.Date));
     }

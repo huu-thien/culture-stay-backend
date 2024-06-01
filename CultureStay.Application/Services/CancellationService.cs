@@ -180,7 +180,7 @@ public class CancellationService (
             booking.CheckOutDate,
             property.Address,
             property.City);
-        var message = new Message(new List<string> {host.User.Email!}, "AirCnC - Thông tin hủy phòng", template);
+        var message = new Message(new List<string> {host.User.Email!}, "Culture Stay - Thông tin hủy phòng", template);
         await emailSender.SendEmailAsync(message);
     }
 }
