@@ -79,8 +79,6 @@ public static class ServiceExtension
 		services.AddScoped<IUserService, UserService>();
 		services.AddScoped<IBookingService, BookingService>();
 		services.AddScoped<ICancellationService, CancellationService>();
-		services.AddScoped<IEmailSender, EmailSender>();
-		services.AddScoped<IMailTemplateHelper, MailTemplateHelper>();
 		return services;
 	}
 
@@ -123,6 +121,7 @@ public static class ServiceExtension
 
 		builder.Services.Configure<TokenSettings>(builder.Configuration.GetSection("TokenSettings"));
 		builder.Services.Configure<MinioSettings>(builder.Configuration.GetSection("MinioSettings"));
+		builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailConfiguration"));
 	}
 	public static IServiceCollection AddMinio(this IServiceCollection services, IConfiguration configuration)
 	{
@@ -204,7 +203,8 @@ public static class ServiceExtension
 	
 	public static IServiceCollection AddEmailSender(this IServiceCollection services)
     {
-        services.AddScoped<IEmailSender, EmailSender>();
+	    services.AddScoped<IEmailSender, EmailSender>();
+	    services.AddScoped<IMailTemplateHelper, MailTemplateHelper>();
         return services;
     }
 }

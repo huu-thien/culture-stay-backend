@@ -38,7 +38,9 @@ public class CancellationService (
         cancellationTicket.IsIssuerGuest = request.IsGuest;
         cancellationTicket.TheOtherPartyId = request.IsGuest ? booking.Property.Host.UserId : booking.Guest.UserId;
         
-        booking.Status = booking.Status == BookingStatus.CheckedIn ? BookingStatus.CancelledAfterCheckIn : BookingStatus.CancelledBeforeCheckIn;
+        booking.Status = booking.Status == BookingStatus.CheckedIn 
+            ? BookingStatus.CancelledAfterCheckIn 
+            : BookingStatus.CancelledBeforeCheckIn;
 
         await unitOfWork.BeginTransactionAsync();
         try
@@ -59,7 +61,7 @@ public class CancellationService (
         cancellationTicket =
             await cancellationTicketRepository.FindOneAsync(new CancellationByIdSpecification(cancellationTicket.Id))
              ?? throw new EntityNotFoundException(nameof(CancellationTicket), cancellationTicket.Id.ToString());
-
+        
         if (cancellationTicket.IsIssuerGuest)
         {
             await SendCancellationEmailToGuestAsync(cancellationTicket);
@@ -141,7 +143,7 @@ public class CancellationService (
         var guest = cancellationTicket.IsIssuerGuest 
             ? await guestRepository.FindOneAsync(new GuestByUserIdSpecification(cancellationTicket.CreatedBy!.Value))
             : await guestRepository.FindOneAsync(new GuestByUserIdSpecification(cancellationTicket.TheOtherPartyId));
-
+        
         var booking = cancellationTicket.Booking;
         var property = cancellationTicket.Booking.Property;
         var host = property.Host;
@@ -157,6 +159,7 @@ public class CancellationService (
             host.User.FullName,
             host.User.PhoneNumber ?? ""
             );
+        
         var message = new Message(new List<string> { guest.User.Email! }, "Culture Stay - Thông tin hủy phòng",
             mailTemplate);
 

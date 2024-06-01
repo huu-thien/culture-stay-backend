@@ -69,12 +69,13 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<int>, int>
     private void SetAuditableEntityProperties()
     {
         var userId = int.TryParse(_currentUser.Id, out var id) ? id : 0;
-        foreach (var entry in ChangeTracker.Entries<AuditableEntity>())
+        foreach (var entry in ChangeTracker.Entries<EntityBase>())
         {
             switch (entry.State)
             {
                 case EntityState.Added:
                     entry.Entity.CreatedBy = userId;
+                    entry.Entity.CreatedAt = DateTime.UtcNow;
                     entry.Entity.CreatedOn = DateTime.UtcNow;
                     break;
 
