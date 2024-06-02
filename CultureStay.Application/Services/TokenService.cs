@@ -30,7 +30,9 @@ public class TokenService(
 			Subject = new ClaimsIdentity(new[]
 			{
 				new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-				new Claim(ClaimTypes.Email, user.Email ?? string.Empty)
+				new Claim(ClaimTypes.Email, user.Email ?? string.Empty),
+				new Claim(ClaimTypes.Name, user.FullName ?? string.Empty),
+				new Claim(ClaimTypes.Uri, user.AvatarUrl ?? string.Empty),		
 			}),
 			Expires = DateTime.UtcNow.AddMinutes(tokenSettings.CurrentValue.ExpiryInMinutes),
 			SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key)),

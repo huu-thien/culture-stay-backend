@@ -2,6 +2,7 @@ using System.Text.Json.Serialization;
 using FluentValidation;
 using Serilog;
 using CultureStay.Application.Services;
+using CultureStay.Chat;
 using CultureStay.Extensions;
 using CultureStay.Middlewares;
 using Minio;
@@ -29,7 +30,12 @@ builder.Services
     .AddProblemDetails()
     .AddExceptionHandler<GlobalExceptionHandler>()
     .AddAuthentication(builder.Configuration)
-    .AddValidatorsFromAssemblyContaining<IRequest>(ServiceLifetime.Singleton);
+    .AddValidatorsFromAssemblyContaining<IRequest>(ServiceLifetime.Singleton)
+    .AddHttpClient()
+    .AddSignalR(options => 
+    { 
+        options.EnableDetailedErrors = true; 
+    });
 
 var app = builder.Build();
 
@@ -49,6 +55,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 // app.UseHttpsRedirection();
 
+app.MapHub<ChatHub>("/chathub");
 app.MapControllers();
 
 app.Run();
