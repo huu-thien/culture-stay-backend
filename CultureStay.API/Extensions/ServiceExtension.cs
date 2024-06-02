@@ -79,6 +79,7 @@ public static class ServiceExtension
 		services.AddScoped<IUserService, UserService>();
 		services.AddScoped<IBookingService, BookingService>();
 		services.AddScoped<ICancellationService, CancellationService>();
+		services.AddScoped<IChatService, ChatService>();
 		return services;
 	}
 
@@ -154,7 +155,23 @@ public static class ServiceExtension
 						new SymmetricSecurityKey(
 							Encoding.UTF8.GetBytes(configuration.GetSection("TokenSettings:Key").Value!)),
 				};
+				options.Events = new JwtBearerEvents
+				{
+					OnMessageReceived = context =>
+					{
+						var accessToken = context.Request.Query["access_token"];
+
+						var path = context.HttpContext.Request.Path;
+						if (!string.IsNullOrEmpty(accessToken) &&
+						    (path.StartsWithSegments("/chathub")))
+						{
+							context.Token = accessToken;
+						}
+					return Task.CompletedTask;
+					}
+				};
 			});
+		
 		return services;
 	}
 

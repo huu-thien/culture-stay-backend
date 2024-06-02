@@ -4,6 +4,7 @@ using CultureStay.Application.ViewModels.Booking.Request;
 using CultureStay.Application.ViewModels.Booking.Response;
 using CultureStay.Application.ViewModels.Cancellation.Request;
 using CultureStay.Application.ViewModels.Cancellation.Response;
+using CultureStay.Application.ViewModels.Chat.Response;
 using CultureStay.Application.ViewModels.Guest.Response;
 using CultureStay.Application.ViewModels.Host.Response;
 using CultureStay.Application.ViewModels.User.Request;
@@ -79,5 +80,11 @@ public class Profiles : Profile
         CreateMap<CancellationTicket, GetCancellationResponse>()
             .ForMember(res => res.IssuerId, opt => opt.MapFrom(ct => ct.CreatedBy))
             .ForMember(res => res.Attachments, opt => opt.MapFrom(ct => ct.Attachments.Select(a => a.Url)));
+        
+        
+        CreateMap<Message, GetMessageResponse>()
+            .ForMember(res => res.MessageTime, opt => opt.MapFrom(m => m.CreatedAt));
+
+        CreateMap<User, GetContactResponse>();
     }
 }
