@@ -52,4 +52,6 @@ public class CreatePropertyRequest
     [Required]
     public PropertyUtilityResponse PropertyUtilities { get; set; } = new PropertyUtilityResponse();
     
+    [Required]
+    public PaymentInfoRequest PaymentInfo { get; set; } = new PaymentInfoRequest();
 }

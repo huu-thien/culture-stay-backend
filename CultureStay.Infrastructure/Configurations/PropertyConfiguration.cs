@@ -32,6 +32,8 @@ public class PropertyConfiguration : IEntityTypeConfiguration<Property>
         builder.Property(p => p.City)
             .IsRequired()
             .HasMaxLength(StringLength.City);
+        builder.Property(p => p.PricePerNight)
+            .IsRequired();
         
         builder.Property(p => p.Type)
             .HasConversion(v => v.ToString(), 

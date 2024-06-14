@@ -23,7 +23,8 @@ public interface IMailTemplateHelper
         string address,
         string city,
         string hostName,
-        string hostNumber);
+        string hostNumber,
+        double total);
 
     string GetGuestCancellationTemplate(
         string guestName,
@@ -63,7 +64,8 @@ public class MailTemplateHelper : IMailTemplateHelper
         string address,
         string city,
         string hostName,
-        string hostNumber)
+        string hostNumber,
+        double total)
     {
         var template = GetTemplate(TemplateType.BookingInfo)
             .Replace("{{name}}", guestName)
@@ -74,7 +76,8 @@ public class MailTemplateHelper : IMailTemplateHelper
             .Replace("{{checkin_date}}", checkInDate.ToString("dd/MM/yyyy"))
             .Replace("{{checkout_date}}", checkOutDate.ToString("dd/MM/yyyy"))
             .Replace("{{host_name}}", hostName)
-            .Replace("{{host_number}}", hostNumber);
+            .Replace("{{host_number}}", hostNumber)
+            .Replace("{{total}}", total.ToString("C0"));
 
         return template;
     }

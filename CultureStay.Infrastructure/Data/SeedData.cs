@@ -40,12 +40,15 @@ public static class SeedData
         var guests = GetGuests(users);
         var hosts = GetHosts(users);
         var properties = GetProperties(hosts);
+        var paymentInfos = GetPaymentInfo(hosts, users);
         if (GetPropertyImages(properties, out var propertyImages)) return;
         var bookings = GetBookings(properties, guests);
         var propertyUtilities = GetPropertyUtility();
         var guestReviews = GetGuestReviews(guests, hosts);
         var hostReviews = GetHostReviews(hosts, guests);
         var propertyReviews = GetPropertyReviews(properties, guests);
+        var bookingPayments = GetBookingPayments(bookings);
+        var hostPayments = GetHostPayments(bookings, paymentInfos);
         
         
         modelBuilder.Entity<Guest>().HasData(guests);
@@ -57,6 +60,78 @@ public static class SeedData
         modelBuilder.Entity<GuestReview>().HasData(guestReviews);
         modelBuilder.Entity<HostReview>().HasData(hostReviews);
         modelBuilder.Entity<PropertyReview>().HasData(propertyReviews);
+        modelBuilder.Entity<BookingPayment>().HasData(bookingPayments);
+        modelBuilder.Entity<HostPayment>().HasData(hostPayments);
+        modelBuilder.Entity<PaymentInfo>().HasData(paymentInfos);
+    }
+    
+    private static List<BookingPayment> GetBookingPayments(List<Booking> bookings)
+    {
+        var bookingPayments = new List<BookingPayment>();
+        var index = 1;
+        foreach (var booking in bookings)
+        {
+            bookingPayments.Add(new BookingPayment()
+            {
+                BookingId = booking.Id,
+                Id = index,
+                Amount = booking.TotalPrice,
+                PaymentCode = Guid.NewGuid().ToString(),
+                Status = (booking.Status == BookingStatus.Completed ||
+                          booking.Status == BookingStatus.CheckedIn ||
+                          booking.Status == BookingStatus.Confirmed)
+                    ? BookingPaymentStatus.Paid : BookingPaymentStatus.Pending,
+                CreatedAt = new Faker().Date.Recent(30, booking.CheckInDate),
+                Guest = booking.Guest,
+                GuestId = booking.GuestId,
+            });
+            index++;
+        }
+
+        return bookingPayments;
+    }
+    private static List<PaymentInfo> GetPaymentInfo(List<Host> hosts, List<User> users)
+    {
+        var paymentInfos = new List<PaymentInfo>();
+        int index = 1;
+        foreach (var host in hosts)
+        {
+            var paymentInfo = new PaymentInfo()
+            {
+                AccountHolder = users.FirstOrDefault(u => u.Id == host.UserId)?.FullName ?? "Unknown",
+                AccountNumber = new Faker().Finance.Account(),
+                BankName = new Faker().Finance.AccountName(),
+                HostId = host.Id,
+                Id = index
+            };
+            paymentInfos.Add(paymentInfo);
+
+            index++;
+        }
+        return paymentInfos;
+    }
+    private static List<HostPayment> GetHostPayments(List<Booking> bookings, List<PaymentInfo> paymentInfos)
+    {
+        var hostPayments = new List<HostPayment>();
+        var index = 1;
+        foreach (var booking in bookings)
+        {
+            hostPayments.Add(new HostPayment()
+            {
+                BookingId = booking.Id,
+                Id = index,
+                Amount = booking.TotalPrice,
+                Status = (booking.Status == BookingStatus.Completed ||
+                          booking.Status == BookingStatus.CheckedIn ||
+                          booking.Status == BookingStatus.Confirmed ||
+                          booking.CheckOutDate < DateTime.Today.AddMonths(-3))
+                    ? HostPaymentStatus.Paid : HostPaymentStatus.Pending,
+                CreatedAt = new Faker().Date.Soon(5, booking.CheckOutDate),
+                PaymentInfoId = new Faker().PickRandom(paymentInfos.Select(p => p.Id).ToList())
+            });
+            index++;
+        }
+        return hostPayments;
     }
 
     private static List<IdentityRole<int>> GetDefaultRoles()
@@ -74,7 +149,7 @@ public static class SeedData
         return new User
         {
             Id = 1,
-            FullName = "Nguyen Huu Thien",
+            FullName = "Nguyen Huu Admin",
             UserName = "admin",
             NormalizedUserName = "ADMIN",
             Email = "admin@gmail.com",
@@ -148,8 +223,9 @@ public static class SeedData
             .RuleFor(p => p.Latitude, f => f.Address.Latitude(8.59975962975, 23.3933950367))
             .RuleFor(p => p.Longitude, f => f.Address.Longitude(102.170435826, 109.33526981))
             .RuleFor(p => p.Address, f => f.Address.StreetAddress())
-        // Generate a random city in VietNam
+            // Generate a random city in VietNam
             .RuleFor(p => p.City, f => f.PickRandom(GetAllProvince()))
+            .RuleFor(p => p.PricePerNight, f => f.Random.Int(0, 500) * 1000) // Price per night between 100,000 and 500,000
             .RuleFor(p => p.Status, f => f.PickRandom<PropertyStatus>())
             .RuleFor(p => p.CreatedAt, f => f.Date.Past(1))
             .RuleFor(p => p.LastModifiedAt, (_, b) => b.CreatedAt)
@@ -197,6 +273,8 @@ public static class SeedData
                                              List<Guest> guests)
     {
         var bookings = new Faker<Booking>()
+            .RuleFor(p => p.PricePerNight, f => f.Random.Int(0, 500) * 1000)
+            .RuleFor(b => b.SystemFee, _ => 10)
             .RuleFor(b => b.PropertyId, f => f.PickRandom(properties.Select(p => p.Id).ToList()))
             .RuleFor(b => b.CheckInDate,
                 f => f.Date.Between(DateTime.UtcNow.AddYears(-1), DateTime.UtcNow.AddYears(1)).Date)

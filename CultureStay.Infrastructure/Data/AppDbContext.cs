@@ -24,7 +24,6 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<int>, int>
     public DbSet<Wishlist> Wishlists { get; set; } = null!;
     
     public DbSet<CancellationTicket> CancellationTickets { get; set; } = null!;
-    public DbSet<CancellationTicketAttachment> CancellationTicketAttachments { get; set; } = null!;
     
     public DbSet<Property> Properties { get; set; } = null!;
     public DbSet<PropertyReview> PropertyReviews { get; set; } = null!;
@@ -39,6 +38,12 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<int>, int>
     public DbSet<RefreshToken> RefreshTokens { get; set; } = null!;
     
     public DbSet<Message> Messages { get; set; } = null!;
+    public DbSet<PaymentInfo> PaymentInfos { get; set; } = null!;
+    public DbSet<BookingPayment> Payments { get; set; } = null!;
+    public DbSet<ChargePayment> ChargePayments { get; set; } = null!;
+    public DbSet<RefundPayment> RefundPayments { get; set; } = null!;
+    public DbSet<HostPayment> HostPayments { get; set; } = null!;
+    public DbSet<VnpHistory> VNPHistories { get; set; } = null!;
     
     
     protected override void OnModelCreating(ModelBuilder builder)
@@ -75,13 +80,20 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<int>, int>
             {
                 case EntityState.Added:
                     entry.Entity.CreatedBy = userId;
-                    entry.Entity.CreatedAt = DateTime.UtcNow;
-                    entry.Entity.CreatedOn = DateTime.UtcNow;
+                    entry.Entity.CreatedAt = DateTime.Now;
+                    entry.Entity.CreatedOn = DateTime.Now;
+                    entry.Entity.LastModifiedAt = DateTime.Now;
+                    entry.Entity.IsDeleted = false;
                     break;
 
                 case EntityState.Modified:
                     entry.Entity.UpdatedBy = userId;
-                    entry.Entity.UpdatedOn = DateTime.UtcNow;
+                    entry.Entity.UpdatedOn = DateTime.Now;
+                    break;
+                case EntityState.Deleted:
+                    entry.State = EntityState.Modified;
+                    entry.Entity.LastModifiedAt = DateTime.Now;
+                    entry.Entity.IsDeleted = true;
                     break;
             }
         }

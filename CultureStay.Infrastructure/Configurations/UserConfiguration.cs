@@ -34,20 +34,7 @@ public class ApplicationUserConfiguration : IEntityTypeConfiguration<User>
             .HasMaxLength(StringLength.Url);
         builder.Property(u => u.Introduction)
             .HasMaxLength(StringLength.Description);
-
-        // builder.HasData(
-        //     new User
-        //     {
-        //         Id = 1,
-        //         UserName = "admin",
-        //         NormalizedUserName = "ADMIN",
-        //         Email = "example@gmail.com",
-        //         NormalizedEmail = "EXAMPLE@GMAIL.COM",
-        //         EmailConfirmed = true,
-        //         PasswordHash = new PasswordHasher<User>().HashPassword(null!, "Admin@123"),
-        //         SecurityStamp = Guid.NewGuid().ToString(),
-        //         FullName = "Admin",
-        //     });
+        
     }
 }
 
