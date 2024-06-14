@@ -28,6 +28,7 @@ public class GetPropertyResponse
     
     public double Rating { get; set; }
     public int NumberOfReviews { get; set; }
+    public double PricePerNight { get; set; }
     
     public string Title { get; set; } = string.Empty;
     public string? Description { get; set; }

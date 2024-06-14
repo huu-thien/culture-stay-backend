@@ -17,7 +17,5 @@ public class User : IdentityUser<int>
 
     public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
     public ICollection<Message> SentMessages { get; set; } = new List<Message>();
-    public ICollection<Message> ReceivedMessages { get; set; } = new List<Message>(); 
-    
-    
+    public ICollection<Message> ReceivedMessages { get; set; } = new List<Message>();
 }

@@ -15,6 +15,7 @@ public class GetBookingForGuestResponse
     
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public BookingStatus Status { get; set; }
+    public double TotalPrice { get; set; }
     
     public DateTime CheckInDate { get; set; }
     public DateTime CheckOutDate { get; set; }

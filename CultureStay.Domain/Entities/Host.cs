@@ -11,4 +11,7 @@ public class Host : EntityBase
     public ICollection<HostReview> HostReviews { get; set; } = new List<HostReview>();
     public ICollection<Property> Properties { get; set; } = new List<Property>();
     public ICollection<GuestReview> GuestReviews { get; set; } = new List<GuestReview>();
+    public ICollection<ChargePayment> ChargePayments { get; set; } = new List<ChargePayment>();
+    
+    public PaymentInfo PaymentInfo { get; set; } = null!;
 }

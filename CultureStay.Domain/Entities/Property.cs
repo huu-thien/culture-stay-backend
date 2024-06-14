@@ -29,6 +29,4 @@ public class Property : EntityBase
     public string? RejectionReason { get; set; }
     
     public double PricePerNight { get; set; }
-    public double CleaningFee { get; set; }
-    // public CancellationPolicyType CancellationPolicyType { get; set; }
 }

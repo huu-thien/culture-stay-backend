@@ -30,6 +30,7 @@ public class PropertyService (
     public async Task<PaginatedList<GetPropertyResponse>> GetListPropertyAsync(PropertyQueryParameters pqp)
     {
         var role = currentUser.Role;
+        Console.WriteLine("rol ne: " + role);
         var propertyFilterSpec = new PropertyFilterSpecification(pqp, role);
         
         var (items, totalCount) = await propertyRepository.FindWithTotalCountAsync(propertyFilterSpec);
@@ -133,7 +134,8 @@ public class PropertyService (
         // Create host profile if not exist
         if (host is null)
         {
-            host = new Host {UserId = userId};
+            var paymentInfo = Mapper.Map<PaymentInfo>(request.PaymentInfo);
+            host = new Host {UserId = userId,PaymentInfo = paymentInfo};
             hostRepository.Add(host);
         }
         

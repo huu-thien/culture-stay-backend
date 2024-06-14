@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CultureStay.Application.Common;
 using CultureStay.Application.Common.Interfaces;
 using CultureStay.Application.Common.Models;
 using CultureStay.Application.Common.Specifications;
@@ -23,6 +24,7 @@ public class BookingService (
     IUnitOfWork unitOfWork,
     IMapper mapper,
     ILogger<BookingService> logger,
+    CultureStaySettings cultureStaySettings,
     ICurrentUser currentUser
     ) : BaseService(unitOfWork, mapper, currentUser), IBookingService
 {
@@ -47,6 +49,7 @@ public class BookingService (
 
     public async Task<GetDraftBookingResponse> CreateBookingAsync(CreateBookingRequest request)
     {
+        logger.LogInformation("Creating booking {@Booking}", request);
         var guest = await guestRepository.FindOneAsync(new GuestByUserIdSpecification(int.Parse(currentUser.Id!)));
         if (guest is null)
             throw new EntityNotFoundException(nameof(Guest), currentUser.Id!);
@@ -65,7 +68,15 @@ public class BookingService (
         
         // Map property info to booking
         var booking = Mapper.Map<Booking>(request);
+        booking.PricePerNight = propertyInfo.PricePerNight;
+        booking.SystemFee = cultureStaySettings.SystemFee;
+        
         booking.Status = BookingStatus.Pending;
+        
+        // Calculate total price
+        var numberOfDays = (booking.CheckOutDate.Date - booking.CheckInDate.Date).Days;
+        var stayPrice = booking.PricePerNight * numberOfDays;
+        booking.TotalPrice = stayPrice;
         
         // Save booking
         bookingRepository.Add(booking);

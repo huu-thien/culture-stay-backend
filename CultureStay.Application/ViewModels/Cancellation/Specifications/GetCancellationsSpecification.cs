@@ -8,7 +8,6 @@ public class GetCancellationsSpecification : Specification<CancellationTicket>
 {
     public GetCancellationsSpecification(CancellationTicketQueryParameters parameters)
     {
-        AddInclude(x => x.Attachments);
         
         if (parameters.Status.HasValue)
             AddFilter(x => x.Status == parameters.Status.Value);    

@@ -15,6 +15,13 @@ public class BookingConfiguration : IEntityTypeConfiguration<Booking>
 
         builder.Property(b => b.CheckOutDate)
             .IsRequired();
+        builder.Property(b => b.TotalPrice)
+            .IsRequired();
+        builder.Property(b => b.PricePerNight)
+            .IsRequired();
+        
+        builder.Property(b => b.SystemFee)
+            .IsRequired();
         
         builder.Property(b => b.Status)
             .HasConversion(v => v.ToString(), 

@@ -22,4 +22,5 @@ public static class StringLength
     public const int ReviewContent = 2048;
     public const int ConfigurationJson = 4000;
     public const int MessageContent = 2048;
+    public const int PaymentCode = 64;
 }

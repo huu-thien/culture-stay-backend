@@ -1,6 +1,7 @@
 using System.Reflection;
 using System.Text;
 using System.Text.Json;
+using CultureStay.Application.Common;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
@@ -13,6 +14,7 @@ using CultureStay.Application.Common.Helpers;
 using CultureStay.Application.Common.Interfaces;
 using CultureStay.Application.Services;
 using CultureStay.Application.Services.Interface;
+using CultureStay.Application.ViewModels.Payment.Config;
 using CultureStay.Domain.Entities;
 using CultureStay.Domain.Repositories.Base;
 using CultureStay.Infrastructure.Data;
@@ -80,6 +82,11 @@ public static class ServiceExtension
 		services.AddScoped<IBookingService, BookingService>();
 		services.AddScoped<ICancellationService, CancellationService>();
 		services.AddScoped<IChatService, ChatService>();
+		services.AddScoped<IHostPaymentService, HostPaymentService>();
+		services.AddScoped<IPaymentInfoService, PaymentInfoService>();
+		services.AddScoped<IPaymentService, PaymentService>();
+		services.AddScoped<CultureStaySettings>();
+		services.AddScoped<PaymentConfig>();
 		return services;
 	}
 
@@ -123,6 +130,8 @@ public static class ServiceExtension
 		builder.Services.Configure<TokenSettings>(builder.Configuration.GetSection("TokenSettings"));
 		builder.Services.Configure<MinioSettings>(builder.Configuration.GetSection("MinioSettings"));
 		builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailConfiguration"));
+		builder.Services.Configure<CultureStaySettings>(builder.Configuration.GetSection("CultureStaySettings"));
+		builder.Services.Configure<PaymentConfig>(builder.Configuration.GetSection("PaymentConfig"));
 	}
 	public static IServiceCollection AddMinio(this IServiceCollection services, IConfiguration configuration)
 	{

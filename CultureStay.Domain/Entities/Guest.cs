@@ -13,4 +13,6 @@ public class Guest : EntityBase
     public ICollection<HostReview> HostReviews { get; set; } = new List<HostReview>();
     public ICollection<PropertyReview> PropertyReviews { get; set; } = new List<PropertyReview>();
     public ICollection<Wishlist> Wishlists { get; set; } = new List<Wishlist>();
+    
+    public ICollection<RefundPayment> RefundPayments { get; set; } = new List<RefundPayment>();
 }

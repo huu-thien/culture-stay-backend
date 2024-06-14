@@ -14,10 +14,23 @@ public class CancellationTicket: EntityBase
     
     public CancellationReason CancellationReason { get; set; }
     
+    public CancellationTicketType Type { get; set; }
+    
     public string? CancellationReasonNote { get; set; }
     
     public CancellationTicketStatus Status { get; set; }
     public string? ResolveNote { get; set; }
     
-    public ICollection<CancellationTicketAttachment> Attachments { get; set; } = null!;
+    // for guest
+    public double RefundAmount { get; set; }
+    
+    // for host
+    public double ChargeAmount { get; set; }
+    
+    
+    public int? RefundPaymentId { get; set; }
+    public RefundPayment? RefundPayment { get; set; }
+    
+    public int? ChargePaymentId { get; set; }
+    public ChargePayment? ChargePayment { get; set; }
 }

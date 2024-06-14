@@ -7,6 +7,10 @@ using CultureStay.Application.ViewModels.Cancellation.Response;
 using CultureStay.Application.ViewModels.Chat.Response;
 using CultureStay.Application.ViewModels.Guest.Response;
 using CultureStay.Application.ViewModels.Host.Response;
+using CultureStay.Application.ViewModels.HostPayment.Response;
+using CultureStay.Application.ViewModels.Payment.Response;
+using CultureStay.Application.ViewModels.PaymentInfo.Response;
+using CultureStay.Application.ViewModels.Property.Request;
 using CultureStay.Application.ViewModels.User.Request;
 using CultureStay.Application.ViewModels.User.Response;
 using CultureStay.Domain.Entities;
@@ -74,17 +78,33 @@ public class Profiles : Profile
         CreateMap<CreateBookingRequest, Booking>();
         
         CreateMap<CreateCancellationRequest, CancellationTicket>()
-            .ForMember(ct => ct.CancellationReasonNote, opt => opt.MapFrom(c => c.Reason))
-            .ForMember(ct => ct.Attachments, opt => opt.MapFrom(c => c.Attachments.Select(a => new CancellationTicketAttachment {Url = a})));
-        
+            .ForMember(ct => ct.CancellationReasonNote, opt => opt.MapFrom(c => c.Reason));
+
         CreateMap<CancellationTicket, GetCancellationResponse>()
-            .ForMember(res => res.IssuerId, opt => opt.MapFrom(ct => ct.CreatedBy))
-            .ForMember(res => res.Attachments, opt => opt.MapFrom(ct => ct.Attachments.Select(a => a.Url)));
+            .ForMember(res => res.IssuerId, opt => opt.MapFrom(ct => ct.CreatedBy));
+           
         
         
         CreateMap<Message, GetMessageResponse>()
             .ForMember(res => res.MessageTime, opt => opt.MapFrom(m => m.CreatedAt));
 
         CreateMap<User, GetContactResponse>();
+        
+        
+        CreateMap<VnpHistoryDto, VnpHistory>();
+        CreateMap<VnpHistory, VnpHistoryDto>();
+        
+        CreateMap<HostPayment, HostPaymentResponse>();
+        CreateMap<PaymentInfo, HostPaymentInfoResponse>();
+        CreateMap<PaymentInfoRequest, PaymentInfo>();
+        
+        CreateMap<PaymentInfo, PaymentInfoResponse>().ReverseMap();
+        
+        CreateMap<ChargePayment, GetChargePaymentResponse>()
+            .ForMember(res=>res.FullName,opt=>opt.MapFrom(src=>src.Host.User.FullName))
+            .ForMember(res=>res.UserId,opt=>opt.MapFrom(src=>src.Host.UserId));
+        CreateMap<RefundPayment,GetChargePaymentResponse>()
+            .ForMember(res => res.FullName, opt => opt.MapFrom(src => src.Guest.User.FullName))
+            .ForMember(res=>res.UserId,opt=>opt.MapFrom(src=>src.Guest.UserId));
     }
 }

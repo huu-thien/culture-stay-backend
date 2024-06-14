@@ -20,9 +20,11 @@ public class Booking : EntityBase
     public CancellationTicket? CancellationTicket { get; set; }
     public string? Guid { get; set; }
     
-    // public double CleaningFee { get; set; }
-    // public double PricePerNight { get; set; }
-    // public double SystemFee { get; set; }
-    // public double TotalPrice { get; set; }
-    // public CancellationPolicyType CancellationPolicyType { get; set; }
+    public double PricePerNight { get; set; }
+    public double SystemFee { get; set; }
+    public double TotalPrice { get; set; }
+    public int? HostPaymentId { get; set; }
+    public HostPayment? HostPayment { get; set; }
+    public int? BookingPaymentId { get; set; }
+    public BookingPayment? BookingPayment { get; set; }
 }
