@@ -1,6 +1,6 @@
 ﻿services:
   CultureStay.api:
-    image: CultureStay.api
+    image: culture-stay.api
     build:
       context: .
       dockerfile: CultureStay.API/Dockerfile
