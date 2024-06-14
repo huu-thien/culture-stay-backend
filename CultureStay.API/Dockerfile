@@ -22,6 +22,6 @@ RUN dotnet publish "CultureStay.API.csproj" -c $BUILD_CONFIGURATION -o /app/publ
 
 FROM base AS final
 WORKDIR /app
-COPY --from=publish /src/Novle.API/https/aspnetapp.pfx /https/
+COPY --from=publish /src/CultureStay.API/https/aspnetapp.pfx /https/
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "CultureStay.API.dll"]
