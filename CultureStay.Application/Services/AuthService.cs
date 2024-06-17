@@ -128,6 +128,14 @@ public class AuthService(
 		}).Userinfo.Get().ExecuteAsync();
 
 		var user = await GetOrCreateUserAsync(userInfo);
+		
+		var guest = await guestRepository.FindOneAsync(new GuestByUserIdSpecification(user.Id));
+		if (guest == null)
+		{
+			guestRepository.Add(new Guest { UserId = user.Id });
+			await unitOfWork.SaveChangesAsync();
+		}
+		
 		var userDto = Mapper.Map<GetUserResponse>(user);
 		userDto.IsHost = await hostRepository.AnyAsync(new HostByUserIdSpecification(user.Id));
 		

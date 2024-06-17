@@ -56,7 +56,11 @@ public class ReviewService (
             .FindOneAsync(new PropertyReviewByIdsSpecification(propertyId, request.GuestId));
         
         // Update the existing review or create new one
-        if (propertyReview != null) Mapper.Map(request, propertyReview);
+        if (propertyReview != null)
+        {
+            Mapper.Map(request, propertyReview);
+            propertyReview.IsDeleted = false;
+        }
         else
         {
             propertyReview = Mapper.Map<PropertyReview>(request);
@@ -119,7 +123,11 @@ public class ReviewService (
         var hostReview = await hostReviewRepository.FindOneAsync(new HostReviewByIdsSpecification(hostId, createReviewRequest.ReviewerId));
         
         // Update the existing review or create new one
-        if (hostReview != null) Mapper.Map(createReviewRequest, hostReview);
+        if (hostReview != null)
+        {
+            Mapper.Map(createReviewRequest, hostReview);
+            hostReview.IsDeleted = false;
+        }
         else
         {
             hostReview = Mapper.Map<HostReview>(createReviewRequest);
@@ -182,7 +190,11 @@ public class ReviewService (
         var guestReview = await guestReviewRepository.FindOneAsync(new GuestReviewByIdsSpecification(guestId, createReviewRequest.ReviewerId));
         
         // Update the existing review or create new one
-        if(guestReview != null) Mapper.Map(createReviewRequest, guestReview);
+        if (guestReview != null)
+        {
+            Mapper.Map(createReviewRequest, guestReview);
+            guestReview.IsDeleted = false;
+        }
         else
         {
             guestReview = Mapper.Map<GuestReview>(createReviewRequest);
