@@ -11,6 +11,7 @@ public class GuestReviewSpecification : Specification<GuestReview>
     {
         AddInclude($"{nameof(Host)}.{nameof(User)}");
         AddFilter(gr => gr.GuestId == guestId);
+        AddFilter(gr => gr.IsDeleted == false);
         
         if (rqp == null) return;
         

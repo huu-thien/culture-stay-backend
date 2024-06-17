@@ -11,6 +11,7 @@ public class PropertyReviewSpecification : Specification<PropertyReview>
     {
         AddInclude($"{nameof(Guest)}.{nameof(User)}");
         AddFilter(pr => pr.PropertyId == propertyId);
+        AddFilter(pr => pr.IsDeleted == false);
         
         if (qp == null) return;
         

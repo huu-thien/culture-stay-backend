@@ -287,6 +287,8 @@ public static class SeedData
                                      b) => b.CheckOutDate < DateTime.UtcNow
                                                ? BookingStatus.Completed
                                                : f.PickRandom<BookingStatus>())
+            .RuleFor(b => b.TotalPrice, (_,
+                    b) => b.PricePerNight * (b.CheckOutDate - b.CheckInDate).Days + b.SystemFee)
             .RuleFor(b => b.GuestId, f => f.PickRandom(guests.Select(g => g.Id).ToList()))
             .RuleFor(b => b.Guid, _ => Guid.NewGuid().ToString())
             .RuleFor(b => b.CreatedAt, (f, b) => f.Date.Between(b.CheckInDate.AddDays(-10), b.CheckInDate))
