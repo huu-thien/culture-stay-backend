@@ -24,7 +24,7 @@ public class PropertyFilterSpecification : Specification<CultureStay.Domain.Enti
         {
             if (hostId != 0)
             {
-                AddFilter(p => p.Status == PropertyStatus.Approved || p.Status == PropertyStatus.Pending);
+                AddFilter(p => p.Status == PropertyStatus.Approved);
             }
             else
             {
