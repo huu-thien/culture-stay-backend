@@ -8,6 +8,7 @@ public class WishlistByGuestIdSpecification : Specification<Domain.Entities.Wish
     public WishlistByGuestIdSpecification(PagingParameters pg, int guestId)
     {
         AddFilter(w => w.GuestId == guestId);
+        AddFilter(w => w.IsDeleted == false);
         AddInclude(w => w.Property);
         AddInclude(w => w.Property.PropertyImages);
         AddInclude(w => w.Property.PropertyUtilities);
